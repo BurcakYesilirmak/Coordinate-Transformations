@@ -1,0 +1,78 @@
+// This code transforms from geocentric to geodetic coordinates
+//using Kuo-Chi and Jie Wang Algorithm with Newton-Raphson method
+
+#include<stdio.h>
+#include<stdlib.h>
+#include<math.h>
+#define f(m1)   a2*W2/t + b2*Z2/r - 1
+#define df(m1)  -4*(a2*W2/u + b2*Z2/s)
+#define epsx 1e-10
+int main()
+{
+  const double a=6378.137;
+  const double b=6356.752;
+  const double rad=57.29577951;
+  double mo,m,fo,dfo,epsf,X,Y,Z,W,We,Ze;
+  double a2,b2,a4,b4,ab,a2b2;
+  double X2,Y2,Z2,W2,A;
+  double q,aq,t,bq,r,u,s;
+  double lat,lon,h;  //in radians
+  // powers of a and b:
+  a2 = a*a;
+  a4 = a2*a2;
+  b2 = b*b;
+  b4 = b2*b2;
+  ab = a*b;
+  a2b2 = a2*b2;
+  printf("Enter the Geocentric Coordinates: (X,Y,Z)\n");
+  scanf("%lf %lf %lf",&X,&Y,&Z);
+  // powers of (X,Y,Z) geocentric coordinates
+  X2=X*X;
+  Y2=Y*Y;
+  Z2=Z*Z;
+  W2=X2+Y2;
+  W=sqrt(W2);
+  // make an initial guess of mo
+  A = a2*Z2 + b2*W2 ;
+  mo = (ab+sqrt(A)*A - a2b2*A)/(2*(a4*Z2+b4*W2)) ;
+  // value of function and its derivative
+  // Newton Rapson Method
+printf("\n    f(m)            df(mo)            m                     Error     ");
+printf("\n ----------------------------------------------------------------------");
+ begin:
+ q = 2*mo;
+ aq = a2+q;
+ t = aq*aq;
+ u = t*aq;
+ bq = b2+q;
+ r = bq*bq;
+ s = r*bq;
+      //the procedure iterates until f(m) converges to zero
+fo = f(mo);
+dfo = df(mo);
+m = mo-(fo/dfo);
+epsf = fabs((m-mo)/m);
+		  if (epsf<epsx)  {
+	 		   printf("\n\nm = %.5f", m);
+       				      }
+		  else{
+		      printf("\n %9.4lf %17.4lf %17.4lf  %19.8lf",f(mo),df(mo),m,epsf);
+                      mo = m;
+                      goto begin;
+                }
+  //compute Ze  and We
+  We=a2*W/(a2+q);
+  Ze=b2*Z/(b2+q);
+  //compute latitude,longitude,height
+  lat=atan((Ze*a2)/(We*b2));
+  lon=atan(Y/X);
+  h=sqrt(pow(W-We,2)+pow(Z-Ze,2));
+  if (fabs(W+fabs(Z)) < fabs(We+fabs(Ze)))
+    h = -h ;
+  printf(" mo = %9.6lf\n",mo);
+  printf(" Transformation from geocentric to geodetic coordinates using Newtons iteration\n");
+  printf(" latitude (radians) = %9.6lf\n",lat*rad);
+  printf(" longitude (radians) = %9.6lf\n",lon*rad);
+  printf(" height =%lf\n",h);
+  return 0;
+   }
