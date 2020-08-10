@@ -1,0 +1,59 @@
+//This code transforms from geocentric to geodetic coordinates
+//using Bowring's Algorithm with Newton-Raphson method
+
+#include<stdio.h>
+#include<stdlib.h>
+#include<math.h>
+#define f(B1)  W*t-(a*e2*c3*t)-q*(Z+b*e_2*s3)
+#define df(B1)  (W/c2)-(a*e2*c)
+#define epsx 1e-12
+int main()
+{
+const double a = 6378.137;
+const double b = 6356.752;
+const double rad = 57.29577951;
+ double Bo,B,e2,e_2,W,X,Y,Z,fo,dfo,epsf;
+ double t,q,s,s3,c,c2,c3,s2,lat,s2lat,lon,h;
+printf("Enter the Geocentric Coordinates: (X,Y,Z)\n");
+scanf("%lf %lf %lf",&X,&Y,&Z);
+ W=sqrt(X*X+Y*Y);
+ e2 = 1-(pow(b,2)/pow(a,2)) ;
+ e_2 = (pow(a,2)/pow(b,2))-1;
+ q = b/a;
+ //make an initial guess of beta
+	Bo=atan(Z/(W*(1-q)));
+printf("\n          f(Bo)                   df(Bo)               beta              Error   ");
+printf("\n --------------------------------------------------------------------------------");
+begin:
+ s = sin(Bo);
+ s3 = s*s*s;
+ c = cos(Bo);
+ c2 = c*c;
+ c3 = c2*c;
+ t = tan(Bo);
+  //the procedure iterates until f(beta) converges to zero
+ fo = f(Bo);
+ dfo = df(Bo);
+ B = Bo-(fo/dfo);
+ epsf = fabs((B-Bo)/B);
+              if (epsf<epsx)  {
+	 	      printf("\n\nbeta = %.5f", B);
+       		       }
+		     	else{
+		         printf("\n %20.4lf %20.4lf %18.4lf  %16.4lf",f(Bo),df(Bo),B,epsf);
+                         Bo = B;
+                         goto begin;
+		       	}
+//calculate latitude
+ lat = atan(tan(B)/q);
+ lon = atan(Y/X);
+ s2lat = sin(lat)*sin(lat);
+ h = W/cos(lat) - a/sqrt(1-(e2*s2lat));
+ //results			   
+  printf(" beta0 = %9.6lf\n",Bo);
+  printf(" Transformation from geocentric to geodetic coordinates using BOWRING'S METHOD with Newtons iteration\n");
+  printf(" latitude (radians) = %9.6lf\n",lat*rad);
+  printf(" longitude (radians) = %9.6lf\n",lon*rad);
+  printf(" height =%lf\n",h);
+  return 0;
+  }
