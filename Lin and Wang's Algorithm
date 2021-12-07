@@ -72,7 +72,7 @@ epsf = fabs((m-mo)/m);
     h = -h ;
   printf(" mo = %9.6lf\n",mo);
   printf(" Transformation from geocentric to geodetic coordinates using Newtons iteration\n");
-  printf(" latitude (radians) = %9.6lf\n",lat*rad);
+  printf(" latitude (radians) =  %9.6lf\n", lat*rad);
   printf(" longitude (radians) = %9.6lf\n",lon*rad);
   printf(" height =%lf\n",h);
   return 0;
