@@ -1,5 +1,6 @@
-// This code transforms from geocentric to geodetic coordinates
-//using Kuo-Chi and Jie Wang Algorithm with Newton-Raphson method
+// This code transforms from geocentric to geodetic coordinates 
+// using Kuo-Chi and Jie Wang Algorithm with Newton-Raphson method
+
 
 #include<stdio.h>
 #include<stdlib.h>
